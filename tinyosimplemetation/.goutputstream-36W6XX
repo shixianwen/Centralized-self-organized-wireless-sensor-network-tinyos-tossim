@@ -1,0 +1,8 @@
+#include "LinkEstimator.h"
+#include "Lab.h"
+#include "TestSerial.h"
+configuration labAppC {}
+implementation {
+	enum {BEACON_MSG = 10,
+	      QUALITY_MSG = 11,
+	      RELAY_MSG =12,//testserial

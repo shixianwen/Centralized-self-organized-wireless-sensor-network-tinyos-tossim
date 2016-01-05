@@ -1,0 +1,149 @@
+/*
+-----------------------------------------------------------------------
+--                               ITEM                                --
+--                Integrated TDMA E-ASAP Module (ITEM)               --
+--                                                                   --
+--                     Copyright (C) 2008                            --
+-- Department of Control Engineering FEE CTU Prague, Czech Republic  --
+--                     http://dce.felk.cvut.cz                       --
+--                                                                   --
+-- Author: 	Pavel Benes	<benesp5@fel.cvut.cz>                --
+-- Advisor: 	Jiri Trdlicka 	<trdlij1@gmail.com>                  --
+--                                                                   --
+-- version: 2.0    24.6.2008                                         --
+-----------------------------------------------------------------------
+
+This file is part of ITEM project.
+
+    ITEM is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    ITEM is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+    
+*/
+
+/**
+ * EASAP Header
+ *
+ * @author	Pavel Benes <benesp5@fel.cvut.cz>
+ * @version 	2.0, Jun 24, 2008
+ **/
+
+
+#ifndef EASAP_H
+  #define EASAP_H
+
+  /*******************/
+  /*** Definitions ***/
+  /*******************/
+  #ifndef TOS_TIME_INCLUDED
+    #define TOS_TIME_INCLUDED
+    #include "SimpleTime.h"
+  #endif //TOS_TIME_INCLUDED
+
+  #ifndef TTIME_DEF
+    #define TTIME_DEF
+    typedef tos_time_t tTime;
+  #endif
+
+  #ifndef NODE_DEF
+    #define NODE_DEF
+    typedef uint16_t tID;
+    typedef uint8_t tFrame;
+    typedef uint8_t tSlot;
+  #endif
+
+  #ifndef TIME_UTIL_ARGS
+    #define TIME_UTIL_ARGS
+    enum
+    {
+      TIME_LESS = -1,
+      TIME_EQUAL = 0,
+      TIME_MORE = 1,
+    };
+  #endif //TIME_UTIL_ARGS
+
+  #ifndef MIN_FRAME_LENGTH
+    #define MIN_FRAME_LENGTH 2
+  #endif
+
+  #ifndef MAX_FRAME_LENGTH
+    #define MAX_FRAME_LENGTH 300 //Max Nodes per Contention area
+  #endif
+
+  #ifndef MIN_TIME_RAND_SLOT
+    #define MIN_TIME_RAND_SLOT 25000 // 25000ms
+  #endif
+  
+  #ifndef MAX_TIME_RAND_SLOT
+    #define MAX_TIME_RAND_SLOT 60000 // 60000ms
+  #endif  
+
+  enum
+  {
+    //MIN_FRAME_LENGTH = 2,
+    //MAX_FRAME_LENGTH = 8, //max nodes / contention area
+
+    CHANGE_FRAME_BY = 2,
+  };
+
+  /*** RETURN MESSAGES ***/
+  enum
+  {
+    EASAP_SLOT_RESERVED   = 0xED,
+    EASAP_SLOT_EXISTS     = 0xEE,
+    EASAP_SLOT_DISCARDED  = 0xEF,
+  };
+
+  /******************/
+  /*** Structures ***/
+  /******************/
+  struct Slot
+  {
+    tSlot slot;
+  
+    struct Slot* prev;
+    struct Slot* next;
+  };
+
+  // Node (Structure of INF)
+  struct Node
+  {
+    tID id;
+	//自己所含的slots
+    struct Slot* slots;
+    tFrame frame;
+  
+    tTime timeStamp;
+  
+    bool neighbour; // neighbour to this node?
+  //  uint8_t neighbour;
+	//指向这个节点的邻居
+    struct Node * prev;
+    struct Node * next;
+  };
+
+  struct DAT
+  {
+    uint8_t frame;
+    uint8_t currentSlot;
+    uint8_t maxFrame;
+  
+  //  uint8_t* data;
+  };
+
+  struct NodeInfo
+  {
+    uint16_t id;
+    uint8_t slot;
+  };
+
+#endif //EASAP_H
